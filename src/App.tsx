@@ -1,35 +1,25 @@
+import axios from 'axios'
 import React, { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Todo } from './Todo';
+import { TodoType } from './types/Todo';
+import { Text } from './Text';
+import { UserProfile } from './UserProfile';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
+  const [todos, setTodos] = useState<Array<TodoType>>([]);
+  const onClickDate = () => {
+    axios.get<Array<TodoType>>("https://jsonplaceholder.typicode.com/todos").then((res) => {
+      setTodos(res.data);
+    })
+  }
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel='noreferrer'>
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel='noreferrer'>
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <Text color="red" fontSize="18px" />
+      <UserProfile name='田中' hobbies={["eiga", "baseball"]} />
+      <button onClick={onClickDate}>データ取得</button>
+      {todos.map((todo) => (
+        <Todo key={todo.id} title={todo.title} userId={todo.userId} completed={todo.completed}/>
+      ))}
+    </div>
   )
 }
-
-export default App
